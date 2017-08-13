@@ -17,14 +17,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.MediaController.MediaPlayerControl;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
-import vladi.youtubeconverter.Services.MusicController;
-import vladi.youtubeconverter.R;
-import vladi.youtubeconverter.Models.Song;
 import vladi.youtubeconverter.Adapters.SongAdapter;
+import vladi.youtubeconverter.Models.Song;
+import vladi.youtubeconverter.Models.SongStatus;
+import vladi.youtubeconverter.R;
+import vladi.youtubeconverter.Services.MusicController;
 import vladi.youtubeconverter.Services.MusicService;
 import vladi.youtubeconverter.Services.MusicService.MusicBinder;
 
@@ -39,6 +45,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     private boolean paused = false;
     private boolean playbackPaused = false;
+    private SongAdapter songAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,8 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
                 return a.getTitle().compareTo(b.getTitle());
             }
         });
-        SongAdapter songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
+
+        songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
             @Override
             public void onClick(int position) {
                 musicSrv.setSong(position);
@@ -84,7 +92,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
     public void onBackPressed() {
         super.onBackPressed();
         stopService(playIntent);
-        musicSrv=null;
+        musicSrv = null;
     }
 
     @Override
@@ -95,6 +103,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -110,14 +119,14 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     public int getDuration() {
-        if (musicSrv != null && musicBound && musicSrv.isPlaying())
+        if (musicSrv != null && musicBound)
             return musicSrv.getDuration();
         else return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        if (musicSrv != null && musicBound && musicSrv.isPlaying()) {
+        if (musicSrv != null && musicBound) {
             return musicSrv.getSongPosition();
         } else return 0;
     }
@@ -179,6 +188,12 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
     protected void onStop() {
         controller.hide();
         super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setSongPlaying(SongStatus status) {
+        songAdapter.changePlayingStatus(status.getPosition(), status.isPLaying());
     }
 
     private void setController() {
@@ -243,19 +258,20 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
 
         if (musicCursor != null && musicCursor.moveToFirst()) {
-            //get columns
             int titleColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.TITLE);
             int idColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media._ID);
             int artistColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.ARTIST);
-            //add songs to list
             do {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
-                songList.add(new Song(thisId, thisTitle, thisArtist));
+                if (Objects.equals(thisArtist, "<unknown>")) {
+                    thisArtist = getString(R.string.unknown_artist);
+                }
+                songList.add(new Song(thisId, thisTitle, thisArtist, false));
             }
             while (musicCursor.moveToNext());
         }

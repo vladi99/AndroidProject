@@ -14,11 +14,14 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 import vladi.youtubeconverter.Activities.MyMusic;
 import vladi.youtubeconverter.Models.Song;
+import vladi.youtubeconverter.Models.SongStatus;
 import vladi.youtubeconverter.R;
 
 public class MusicService extends Service implements
@@ -131,9 +134,11 @@ public class MusicService extends Service implements
             e.printStackTrace();
         }
         player.start();
+        EventBus.getDefault().post(new SongStatus(songPosition, true));
     }
 
     public void setSong(int songIndex) {
+        EventBus.getDefault().post(new SongStatus(songPosition, false));
         songPosition = songIndex;
     }
 
@@ -151,6 +156,7 @@ public class MusicService extends Service implements
 
     public void pausePlayer() {
         player.pause();
+        EventBus.getDefault().post(new SongStatus(songPosition, false));
     }
 
     public void seek(int position) {
@@ -159,9 +165,11 @@ public class MusicService extends Service implements
 
     public void go() {
         player.start();
+        EventBus.getDefault().post(new SongStatus(songPosition, true));
     }
 
     public void playPrev() {
+        EventBus.getDefault().post(new SongStatus(songPosition, false));
         songPosition--;
         if (songPosition < 0) {
             songPosition = songs.size() - 1;
@@ -170,6 +178,7 @@ public class MusicService extends Service implements
     }
 
     public void playNext() {
+        EventBus.getDefault().post(new SongStatus(songPosition, false));
         songPosition++;
         if (songPosition == songs.size()) {
             songPosition = 0;
