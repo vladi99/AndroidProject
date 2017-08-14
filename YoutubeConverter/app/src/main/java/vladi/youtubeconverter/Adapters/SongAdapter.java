@@ -48,14 +48,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
         Song song;
         TextView name;
         TextView artist;
-        public SongHolder(View itemView) {
+        SongHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             name = (TextView) itemView.findViewById(R.id.song_title);
             artist = (TextView) itemView.findViewById(R.id.song_artist);
         }
 
-        public void BindSongItem(Song song) {
+        void BindSongItem(Song song) {
             this.song = song;
             name.setText(song.getTitle());
             artist.setText(song.getArtist());

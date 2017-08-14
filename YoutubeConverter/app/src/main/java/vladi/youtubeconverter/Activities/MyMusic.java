@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -48,6 +49,11 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         setSupportActionBar(toolbar);
 
         RecyclerView songView = findViewById(R.id.song_list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(songView.getContext(),
+                layoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.border));
+        songView.addItemDecoration(dividerItemDecoration);
         songList = new ArrayList<>();
         songView.setLayoutManager(new LinearLayoutManager(this));
         getSongList();
