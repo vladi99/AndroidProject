@@ -63,7 +63,6 @@ public class MusicService extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        mediaPlayer.start();
         Intent notIntent = new Intent(this, MyMusic.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivity(this, 0,
@@ -131,6 +130,7 @@ public class MusicService extends Service implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+        player.start();
     }
 
     public void setSong(int songIndex) {

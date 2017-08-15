@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import vladi.youtubeconverter.Controllers.MusicController;
+import vladi.youtubeconverter.Services.MusicController;
 import vladi.youtubeconverter.R;
 import vladi.youtubeconverter.Models.Song;
 import vladi.youtubeconverter.Adapters.SongAdapter;
@@ -104,14 +104,14 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     public int getDuration() {
-        if (musicSrv != null && musicBound)
+        if (musicSrv != null && musicBound && musicSrv.isPlaying())
             return musicSrv.getDuration();
         else return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        if (musicSrv != null && musicBound) {
+        if (musicSrv != null && musicBound && musicSrv.isPlaying()) {
             return musicSrv.getSongPosition();
         } else return 0;
     }
