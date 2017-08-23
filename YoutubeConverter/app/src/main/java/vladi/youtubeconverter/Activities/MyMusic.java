@@ -79,7 +79,6 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         super.onBackPressed();
         stopService(playIntent);
         musicSrv=null;
-
     }
 
     @Override
@@ -105,14 +104,14 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     public int getDuration() {
-        if (musicSrv != null && musicBound && musicSrv.isPlaying())
+        if (musicSrv != null && musicBound)
             return musicSrv.getDuration();
         else return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        if (musicSrv != null && musicBound && musicSrv.isPlaying()) {
+        if (musicSrv != null && musicBound) {
             return musicSrv.getSongPosition();
         } else return 0;
     }
@@ -124,8 +123,9 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     public boolean isPlaying() {
-        if (musicSrv != null && musicBound)
+        if (musicSrv != null && musicBound) {
             return musicSrv.isPlaying();
+        }
         return false;
     }
 

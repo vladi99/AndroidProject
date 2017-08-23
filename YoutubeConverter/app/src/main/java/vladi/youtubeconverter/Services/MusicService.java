@@ -14,6 +14,7 @@ import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import vladi.youtubeconverter.Activities.MyMusic;
@@ -125,7 +126,11 @@ public class MusicService extends Service implements
         } catch (Exception e) {
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
-        player.prepareAsync();
+        try {
+            player.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setSong(int songIndex) {
