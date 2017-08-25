@@ -29,8 +29,6 @@ import vladi.youtubeconverter.Services.MusicService.MusicBinder;
 
 public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
     private ArrayList<Song> songList;
-    private RecyclerView songView;
-    private SongAdapter songAdapter;
 
     private MusicService musicSrv;
     private Intent playIntent;
@@ -49,7 +47,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        songView = findViewById(R.id.song_list);
+        RecyclerView songView = findViewById(R.id.song_list);
         songList = new ArrayList<>();
         songView.setLayoutManager(new LinearLayoutManager(this));
         getSongList();
@@ -59,7 +57,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
                 return a.getTitle().compareTo(b.getTitle());
             }
         });
-        songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
+        SongAdapter songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
             @Override
             public void onClick(int position) {
                 musicSrv.setSong(position);
@@ -74,6 +72,14 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
         songView.setAdapter(songAdapter);
         setController();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        stopService(playIntent);
+        musicSrv=null;
+
     }
 
     @Override
