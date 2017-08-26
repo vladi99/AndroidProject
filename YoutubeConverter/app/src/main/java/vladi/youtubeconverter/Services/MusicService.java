@@ -1,5 +1,7 @@
 package vladi.youtubeconverter.Services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -14,7 +16,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import vladi.youtubeconverter.Activities.MyMusic;
 import vladi.youtubeconverter.Models.Song;
+import vladi.youtubeconverter.R;
 
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
@@ -25,6 +29,9 @@ public class MusicService extends Service implements
     private int songPosition;
 
     private final IBinder musicBind = new MusicBinder();
+
+    private String songTitle = "";
+    private static final int NOTIFY_ID = 1;
 
     @Nullable
     @Override
@@ -41,17 +48,42 @@ public class MusicService extends Service implements
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-
+        if (mediaPlayer.getCurrentPosition() > 0) {
+            mediaPlayer.reset();
+            playNext();
+        }
     }
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+        mediaPlayer.reset();
         return false;
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
+        Intent notIntent = new Intent(this, MyMusic.class);
+        notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendInt = PendingIntent.getActivity(this, 0,
+                notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setContentIntent(pendInt)
+                .setSmallIcon(R.drawable.play)
+                .setTicker(songTitle)
+                .setOngoing(true)
+                .setContentTitle(getString(R.string.playing))
+                .setContentText(songTitle);
+        Notification not = builder.build();
+
+        startForeground(NOTIFY_ID, not);
+    }
+
+    @Override
+    public void onDestroy() {
+        stopForeground(true);
     }
 
     public void onCreate() {
@@ -80,9 +112,11 @@ public class MusicService extends Service implements
         }
     }
 
-    public void playSong(Song song) {
+    public void playSong() {
         player.reset();
-        long currSong = song.getID();
+        Song playSong = songs.get(songPosition);
+        songTitle = playSong.getTitle();
+        long currSong = playSong.getID();
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 currSong);
@@ -92,5 +126,49 @@ public class MusicService extends Service implements
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
         player.prepareAsync();
+    }
+
+    public void setSong(int songIndex) {
+        songPosition = songIndex;
+    }
+
+    public int getSongPosition() {
+        return player.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return player.getDuration();
+    }
+
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
+
+    public void pausePlayer() {
+        player.pause();
+    }
+
+    public void seek(int position) {
+        player.seekTo(position);
+    }
+
+    public void go() {
+        player.start();
+    }
+
+    public void playPrev() {
+        songPosition--;
+        if (songPosition < 0) {
+            songPosition = songs.size() - 1;
+        }
+        playSong();
+    }
+
+    public void playNext() {
+        songPosition++;
+        if (songPosition == songs.size()) {
+            songPosition = 0;
+        }
+        playSong();
     }
 }

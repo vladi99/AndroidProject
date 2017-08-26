@@ -5,4 +5,5 @@
     <string name="download">download</string>
     <string name="date">Date:</string>
     <string name="title_activity_play_video">Play Video</string>
+    <string name="playing">Playing</string>
 </resources>

@@ -63,12 +63,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
 
         @Override
         public void onClick(View view) {
-            onSongClickListener.onClick(song);
+            onSongClickListener.onClick(getAdapterPosition());
         }
     }
 
     public interface OnSongClickListener{
-        void onClick(Song song);
+        void onClick(int position);
     }
 }
 
