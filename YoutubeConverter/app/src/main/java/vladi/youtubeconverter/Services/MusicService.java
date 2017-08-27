@@ -81,6 +81,7 @@ public class MusicService extends Service implements
     }
 
     public void playSong(Song song) {
+        player.reset();
         long currSong = song.getID();
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
