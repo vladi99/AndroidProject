@@ -48,7 +48,7 @@ public class MyMusic extends AppCompatActivity {
         songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
             @Override
             public void onClick(Song song) {
-                //TODO: call method musicSrv.playSong()
+                musicSrv.playSong(song);
             }
         });
 
@@ -59,7 +59,9 @@ public class MyMusic extends AppCompatActivity {
                 return a.getTitle().compareTo(b.getTitle());
             }
         });
+
     }
+
     @Override
     protected void onStart() {
         super.onStart();

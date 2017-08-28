@@ -80,10 +80,8 @@ public class MusicService extends Service implements
         }
     }
 
-    public void playSong() {
-        player.reset();
-        Song playSong = songs.get(songPosition);
-        long currSong = playSong.getID();
+    public void playSong(Song song) {
+        long currSong = song.getID();
         Uri trackUri = ContentUris.withAppendedId(
                 android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 currSong);
@@ -93,9 +91,5 @@ public class MusicService extends Service implements
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
         player.prepareAsync();
-    }
-
-    public void setSong(int songIndex) {
-        songPosition = songIndex;
     }
 }

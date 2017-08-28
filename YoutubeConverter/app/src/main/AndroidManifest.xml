@@ -25,7 +25,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-        <service android:name=".MusicService" />
+        <service android:name="vladi.youtubeconverter.Services.MusicService" />
         <activity
             android:name=".Activities.MyVideo"
             android:label="@string/my_videos"
