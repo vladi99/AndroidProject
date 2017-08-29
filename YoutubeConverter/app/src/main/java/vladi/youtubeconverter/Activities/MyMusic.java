@@ -1,9 +1,14 @@
 package vladi.youtubeconverter.Activities;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +21,17 @@ import java.util.Comparator;
 import vladi.youtubeconverter.R;
 import vladi.youtubeconverter.Models.Song;
 import vladi.youtubeconverter.Adapters.SongAdapter;
+import vladi.youtubeconverter.Services.MusicService;
+import vladi.youtubeconverter.Services.MusicService.MusicBinder;
 
 public class MyMusic extends AppCompatActivity {
     private ArrayList<Song> songList;
     private RecyclerView songView;
     private SongAdapter songAdapter;
+
+    private MusicService musicSrv;
+    private Intent playIntent;
+    private boolean musicBound=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +48,7 @@ public class MyMusic extends AppCompatActivity {
         songAdapter = new SongAdapter(songList, new SongAdapter.OnSongClickListener() {
             @Override
             public void onClick(Song song) {
-                //TODO: play song
+                //TODO: call method musicSrv.playSong()
             }
         });
 
@@ -48,6 +59,15 @@ public class MyMusic extends AppCompatActivity {
                 return a.getTitle().compareTo(b.getTitle());
             }
         });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(playIntent==null){
+            playIntent = new Intent(this, MusicService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
+        }
     }
 
     public void getSongList() {
@@ -73,5 +93,22 @@ public class MyMusic extends AppCompatActivity {
             while (musicCursor.moveToNext());
         }
     }
+    //connect to the service
+    private ServiceConnection musicConnection = new ServiceConnection(){
 
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicBinder binder = (MusicBinder)service;
+            //get service
+            musicSrv = binder.getService();
+            //pass list
+            musicSrv.setList(songList);
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 }

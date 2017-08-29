@@ -68,7 +68,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongHolder> {
     }
 
     public interface OnSongClickListener{
-        public void onClick(Song song);
+        void onClick(Song song);
     }
 }
 

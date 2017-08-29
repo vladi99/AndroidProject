@@ -1,21 +1,18 @@
 package vladi.youtubeconverter.Services;
 
 import android.app.Service;
-import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-
-import java.util.ArrayList;
-
 import android.content.ContentUris;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.IBinder;
 import android.os.PowerManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import vladi.youtubeconverter.Models.Song;
 
@@ -27,10 +24,19 @@ public class MusicService extends Service implements
     private ArrayList<Song> songs;
     private int songPosition;
 
+    private final IBinder musicBind = new MusicBinder();
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return musicBind;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        player.stop();
+        player.release();
+        return false;
     }
 
     @Override
@@ -45,7 +51,7 @@ public class MusicService extends Service implements
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-
+        mediaPlayer.start();
     }
 
     public void onCreate() {
@@ -69,8 +75,27 @@ public class MusicService extends Service implements
     }
 
     public class MusicBinder extends Binder {
-        MusicService getService() {
+        public MusicService getService() {
             return MusicService.this;
         }
+    }
+
+    public void playSong() {
+        player.reset();
+        Song playSong = songs.get(songPosition);
+        long currSong = playSong.getID();
+        Uri trackUri = ContentUris.withAppendedId(
+                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                currSong);
+        try {
+            player.setDataSource(getApplicationContext(), trackUri);
+        } catch (Exception e) {
+            Log.e("MUSIC SERVICE", "Error setting data source", e);
+        }
+        player.prepareAsync();
+    }
+
+    public void setSong(int songIndex) {
+        songPosition = songIndex;
     }
 }
