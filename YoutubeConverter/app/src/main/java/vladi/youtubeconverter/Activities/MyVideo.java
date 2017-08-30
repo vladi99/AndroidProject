@@ -1,4 +1,4 @@
-package vladi.youtubeconverter;
+package vladi.youtubeconverter.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import vladi.youtubeconverter.Adapters.VideoAdapter;
+import vladi.youtubeconverter.Models.Video;
+import vladi.youtubeconverter.R;
 
 public class MyVideo extends AppCompatActivity {
 

@@ -1,12 +1,15 @@
-package vladi.youtubeconverter;
+package vladi.youtubeconverter.Activities;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
+import vladi.youtubeconverter.R;
 
 public class PlayVideo extends AppCompatActivity {
 
@@ -19,6 +22,7 @@ public class PlayVideo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_video);
 
+        LinearLayout mediaLayout = findViewById(R.id.video_layout);
         String path = getIntent().getStringExtra("VIDEO_PATH");
         if (mediaControls == null) {
             mediaControls = new MediaController(PlayVideo.this);
@@ -26,9 +30,9 @@ public class PlayVideo extends AppCompatActivity {
 
         myVideoView = findViewById(R.id.video_view);
 
-
         try {
             myVideoView.setMediaController(mediaControls);
+            mediaControls.setAnchorView(mediaLayout);
             myVideoView.setVideoURI(Uri.parse(path));
 
         } catch (Exception e) {
@@ -38,7 +42,6 @@ public class PlayVideo extends AppCompatActivity {
 
         myVideoView.requestFocus();
         myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
             public void onPrepared(MediaPlayer mediaPlayer) {
                 myVideoView.seekTo(position);
                 if (position == 0) {

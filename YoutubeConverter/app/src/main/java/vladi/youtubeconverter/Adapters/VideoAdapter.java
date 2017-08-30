@@ -1,7 +1,6 @@
-package vladi.youtubeconverter;
+package vladi.youtubeconverter.Adapters;
 
 import android.content.Context;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +10,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
+import vladi.youtubeconverter.Models.Video;
+import vladi.youtubeconverter.R;
 
 import static java.lang.String.format;
 
-class VideoAdapter extends BaseAdapter {
+public class VideoAdapter extends BaseAdapter {
     private List<Video> list;
     private final Context context;
 
-    VideoAdapter(Context localContext, List<Video> videos) {
+    public VideoAdapter(Context localContext, List<Video> videos) {
         context = localContext;
         this.list = videos;
     }

@@ -1,20 +1,20 @@
-package vladi.youtubeconverter;
+package vladi.youtubeconverter.Models;
 
-class Video {
+public class Video {
 
     private String path;
     private String date;
 
-    Video(String path, String name) {
+    public Video(String path, String name) {
         this.path = path;
         this.date = name;
     }
 
-    String getPath(){
+    public String getPath(){
         return path;
     }
 
-    String getDate(){
+    public String getDate(){
         return date;
     }
 }

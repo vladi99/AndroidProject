@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,15 +20,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MyMusic"
+            android:name=".Activities.MyMusic"
             android:label="@string/my_music"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <service android:name=".MusicService" />
         <activity
-            android:name=".MyVideo"
+            android:name=".Activities.MyVideo"
             android:label="@string/my_videos"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PlayVideo"
+            android:name=".Activities.PlayVideo"
             android:label="@string/title_activity_play_video"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"></activity>
