@@ -1,1 +1,2 @@
-# AndroidProject
+# Android Project
+Project for mobile course
