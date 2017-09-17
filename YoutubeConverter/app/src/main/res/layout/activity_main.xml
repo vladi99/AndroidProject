@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="vladi.youtubeconverter.MainActivity"
+    android:gravity="center_horizontal"
+    android:padding="6dp"
+    android:weightSum="3">
+
+    <Button
+        android:id="@+id/myVideosButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/my_videos"
+        android:layout_marginTop="82dp"
+        android:layout_weight="2"
+        android:textSize="20sp"/>
+
+</LinearLayout>
