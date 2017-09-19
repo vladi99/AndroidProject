@@ -13,9 +13,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void GetVideos(View view) {
-
-        Intent getVideosIntent = new Intent(this, MyVideos.class);
-        startActivity(getVideosIntent);
+    public void GetVideo(View view) {
+        Intent getVideoIntent = new Intent(this, MyVideo.class);
+        startActivity(getVideoIntent);
     }
+
+    public void GetMusic(View view) {
+        Intent getMusicIntent = new Intent(this, MyMusic.class);
+        startActivity(getMusicIntent);
+    }
+
+
 }
