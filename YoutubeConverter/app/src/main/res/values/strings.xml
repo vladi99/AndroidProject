@@ -2,4 +2,5 @@
     <string name="app_name">Youtube Converter</string>
     <string name="my_videos">My Video</string>
     <string name="my_music">My Music</string>
+    <string name="download">download</string>
 </resources>
