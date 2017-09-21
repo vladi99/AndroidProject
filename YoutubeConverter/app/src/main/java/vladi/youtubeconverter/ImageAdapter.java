@@ -1,61 +1,78 @@
 package vladi.youtubeconverter;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-class ImageAdapter extends BaseAdapter {
-    private Context mContext;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
-    public ImageAdapter(Context c) {
-        mContext = c;
+class ImageAdapter extends BaseAdapter {
+    private ArrayList<String> list;
+    private final Context context;
+
+    ImageAdapter(Context localContext) {
+        context = localContext;
+        this.list = getAllMedia();
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return list.size();
     }
 
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
-        }
+        ImageView picturesView;
 
-        imageView.setImageResource(mThumbIds[position]);
-        return imageView;
+        Bitmap bitmap = null;
+        if (convertView == null) {
+            picturesView = new ImageView(context);
+            bitmap = ThumbnailUtils.createVideoThumbnail(list.get(position), 0); //Creation of Thumbnail of video
+            picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            picturesView.setPadding(8, 8, 8, 8);
+            picturesView.setLayoutParams(new GridView.LayoutParams(100, 100));
+        } else {
+            picturesView = (ImageView) convertView;
+        }
+        picturesView.setImageBitmap(bitmap);
+        return picturesView;
     }
 
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.sample_0, R.drawable.sample_1,
-            R.drawable.sample_2, R.drawable.sample_3,
-            R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7
-    };
+    private ArrayList<String> getAllMedia() {
+        ArrayList<String> lis = new ArrayList<>();
+        File parent = new File(Environment.getExternalStorageDirectory(), "DCIM/Camera");
+        File[] files = parent.listFiles();
+        for (File file : files) {
+            if (file.getName().endsWith(".mp4")) {
+                lis.add(file.getAbsolutePath());
+            }
+        }
+        return lis;
+    }
+
+
+    public Context getContext() {
+        return context;
+    }
 }
 
