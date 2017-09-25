@@ -1,11 +1,9 @@
 package vladi.youtubeconverter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,10 +12,6 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 
 class ImageAdapter extends BaseAdapter {
     private ArrayList<String> list;
@@ -48,8 +42,7 @@ class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             picturesView = new ImageView(context);
             bitmap = ThumbnailUtils.createVideoThumbnail(list.get(position), 0); //Creation of Thumbnail of video
-            picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            picturesView.setPadding(8, 8, 8, 8);
+            picturesView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             picturesView.setLayoutParams(new GridView.LayoutParams(100, 100));
         } else {
             picturesView = (ImageView) convertView;
@@ -60,16 +53,17 @@ class ImageAdapter extends BaseAdapter {
 
     private ArrayList<String> getAllMedia() {
         ArrayList<String> lis = new ArrayList<>();
-        File parent = new File(Environment.getExternalStorageDirectory(), "DCIM/Camera");
-        File[] files = parent.listFiles();
-        for (File file : files) {
+
+        File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Camera").getAbsolutePath());
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
             if (file.getName().endsWith(".mp4")) {
                 lis.add(file.getAbsolutePath());
             }
         }
         return lis;
     }
-
 
     public Context getContext() {
         return context;
