@@ -4,19 +4,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -32,6 +32,7 @@ class ImageAdapter extends BaseAdapter {
 
     ImageAdapter(Context localContext) {
         context = localContext;
+
         this.list = getAllMedia();
     }
 
@@ -58,10 +59,12 @@ class ImageAdapter extends BaseAdapter {
             TextView textViewAndroid = gridViewAndroid.findViewById(R.id.grid_text);
             ImageView imageViewAndroid = gridViewAndroid.findViewById(R.id.grid_image);
             textViewAndroid.setText(format("%s %s", context.getString(R.string.date), list.get(position).getName()));
-            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(list.get(position).getPath(), 0); //Creation of Thumbnail of video
-            imageViewAndroid.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageViewAndroid.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
-            imageViewAndroid.setBackground(new BitmapDrawable(getResources(), bitmap));
+            long startTime = System.currentTimeMillis();
+            Glide.with(context)
+                    .load(list.get(position).getPath())
+                    .into(imageViewAndroid);
+            long stopTime = System.currentTimeMillis();
+            System.out.println("Elapsed time was " + (stopTime - startTime) + " milliseconds.");
         } else {
             gridViewAndroid = convertView;
         }
@@ -81,18 +84,9 @@ class ImageAdapter extends BaseAdapter {
                 String str = new SimpleDateFormat("dd/MM/yyyy", Locale.US).format(lastModified);
                 Video video = new Video(file.getAbsolutePath(), str);
                 videos.add(video);
-                System.out.println(str);
             }
         }
         return videos;
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    public Resources getResources() {
-        return null;
     }
 }
 

@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     public void GetVideo(View view) {
         Intent getVideoIntent = new Intent(this, MyVideo.class);
         startActivity(getVideoIntent);
+
     }
 
     public void GetMusic(View view) {
