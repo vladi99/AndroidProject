@@ -1,19 +1,12 @@
 package vladi.youtubeconverter;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,12 +15,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static java.lang.String.format;
 
 class ImageAdapter extends BaseAdapter {
-    private ArrayList<Video> list;
+    private List<Video> list;
     private final Context context;
 
     ImageAdapter(Context localContext) {
@@ -56,9 +50,9 @@ class ImageAdapter extends BaseAdapter {
 
         if (convertView == null) {
             gridViewAndroid = inflater.inflate(R.layout.grid_video_single, null);
-            TextView textViewAndroid = gridViewAndroid.findViewById(R.id.grid_text);
+            //TextView textViewAndroid = gridViewAndroid.findViewById(R.id.grid_text);
             ImageView imageViewAndroid = gridViewAndroid.findViewById(R.id.grid_image);
-            textViewAndroid.setText(format("%s %s", context.getString(R.string.date), list.get(position).getName()));
+            //textViewAndroid.setText(format("%s %s", context.getString(R.string.date), list.get(position).getDate()));
             long startTime = System.currentTimeMillis();
             Glide.with(context)
                     .load(list.get(position).getPath())
@@ -72,8 +66,8 @@ class ImageAdapter extends BaseAdapter {
         return gridViewAndroid;
     }
 
-    private ArrayList<Video> getAllMedia() {
-        ArrayList<Video> videos = new ArrayList<>();
+    private List<Video> getAllMedia() {
+        List<Video> videos = new ArrayList<>();
 
         File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Camera").getAbsolutePath());
         File[] listOfFiles = folder.listFiles();
