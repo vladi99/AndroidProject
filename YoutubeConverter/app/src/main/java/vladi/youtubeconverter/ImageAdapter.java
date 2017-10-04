@@ -50,9 +50,9 @@ class ImageAdapter extends BaseAdapter {
 
         if (convertView == null) {
             gridViewAndroid = inflater.inflate(R.layout.grid_video_single, null);
-            //TextView textViewAndroid = gridViewAndroid.findViewById(R.id.grid_text);
+            TextView textViewAndroid = gridViewAndroid.findViewById(R.id.grid_text);
             ImageView imageViewAndroid = gridViewAndroid.findViewById(R.id.grid_image);
-            //textViewAndroid.setText(format("%s %s", context.getString(R.string.date), list.get(position).getDate()));
+            textViewAndroid.setText(format("%s %s", context.getString(R.string.date), list.get(position).getDate()));
             long startTime = System.currentTimeMillis();
             Glide.with(context)
                     .load(list.get(position).getPath())
