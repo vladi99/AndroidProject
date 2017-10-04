@@ -4,4 +4,5 @@
     <string name="my_music">My Music</string>
     <string name="download">download</string>
     <string name="date">Date:</string>
+    <string name="title_activity_play_video">Play Video</string>
 </resources>
