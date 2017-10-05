@@ -1,36 +1,68 @@
 package vladi.youtubeconverter;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
-import java.io.IOException;
+import android.util.Log;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 public class PlayVideo extends AppCompatActivity {
+
+    private VideoView myVideoView;
+    private int position = 0;
+    private MediaController mediaControls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_video);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         String path = getIntent().getStringExtra("VIDEO_PATH");
-        MediaPlayer mp = new MediaPlayer();
-        mp.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        if (mediaControls == null) {
+            mediaControls = new MediaController(PlayVideo.this);
+        }
+
+        myVideoView = (VideoView) findViewById(R.id.video_view);
+
+
         try {
-            mp.setDataSource(path);
-        } catch (IOException e) {
+            myVideoView.setMediaController(mediaControls);
+            myVideoView.setVideoURI(Uri.parse(path));
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
-        try {
-            mp.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mp.start();
+
+        myVideoView.requestFocus();
+        myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                myVideoView.seekTo(position);
+                if (position == 0) {
+                    myVideoView.start();
+                } else {
+                    myVideoView.pause();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("Position", myVideoView.getCurrentPosition());
+        myVideoView.pause();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        position = savedInstanceState.getInt("Position");
+        myVideoView.seekTo(position);
     }
 
 }
