@@ -22,7 +22,10 @@
         <activity
             android:name=".MyMusic"
             android:label="@string/my_music"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <service android:name=".MusicService" />
         <activity
             android:name=".MyVideo"
             android:label="@string/my_videos"
