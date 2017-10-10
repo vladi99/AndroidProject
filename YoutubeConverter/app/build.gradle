@@ -21,7 +21,6 @@ android {
 
 repositories {
     mavenCentral()
-    maven { url 'https://maven.google.com' }
 }
 
 dependencies {
@@ -38,4 +37,14 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
     compile 'com.github.claucookie.miniequalizer:library:1.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.github.HaarigerHarald:android-youtubeExtractor:master-SNAPSHOT'
+}
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
+        maven { url "https://jitpack.io" }
+    }
 }

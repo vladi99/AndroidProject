@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Objects;
 
 import vladi.youtubeconverter.Adapters.SongAdapter;
@@ -67,7 +69,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
-                return a.getTitle().compareTo(b.getTitle());
+                return (int)(b.getDate() - a.getDate());
             }
         });
 
@@ -138,10 +140,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     public boolean isPlaying() {
-        if (musicSrv != null && musicBound) {
-            return musicSrv.isPlaying();
-        }
-        return false;
+        return musicSrv != null && musicBound && musicSrv.isPlaying();
     }
 
     @Override
@@ -264,14 +263,17 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
                     (android.provider.MediaStore.Audio.Media._ID);
             int artistColumn = musicCursor.getColumnIndex
                     (android.provider.MediaStore.Audio.Media.ARTIST);
+            int dateColumn = musicCursor.getColumnIndex
+                    (MediaStore.Audio.Media.DATE_ADDED);
             do {
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
+                long thisDate = musicCursor.getLong(dateColumn);
                 if (Objects.equals(thisArtist, "<unknown>")) {
                     thisArtist = getString(R.string.unknown_artist);
                 }
-                songList.add(new Song(thisId, thisTitle, thisArtist, false));
+                songList.add(new Song(thisId, thisTitle, thisArtist, thisDate, false));
             }
             while (musicCursor.moveToNext());
         }

@@ -7,11 +7,13 @@ public class Song {
     private String artist;
     private boolean isPlaying;
 
-    public Song(long songID, String songTitle, String songArtist, Boolean isPng) {
+    private long date;
+    public Song(long songID, String songTitle, String songArtist, long d, Boolean isPng) {
         id = songID;
         title = songTitle;
         artist = songArtist;
         isPlaying = isPng;
+        date = d;
     }
 
     public long getID() {
@@ -49,4 +51,13 @@ public class Song {
     public void setPlaying(boolean playing) {
         isPlaying = playing;
     }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
 }

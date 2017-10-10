@@ -25,5 +25,9 @@ public class MainActivity extends AppCompatActivity {
         Intent getMusicIntent = new Intent(this, MyMusic.class);
         startActivity(getMusicIntent);
     }
-
+    public void Download(View view) {
+        Intent downloadIntent = new Intent(this, Download.class);
+        downloadIntent.putExtra(Intent.EXTRA_TEXT, "https://www.youtube.com/watch?v=J30UOKAD4jw");
+        startActivity(downloadIntent);
+    }
 }

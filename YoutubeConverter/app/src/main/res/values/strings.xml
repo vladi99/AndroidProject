@@ -7,4 +7,6 @@
     <string name="title_activity_play_video">Play Video</string>
     <string name="playing">Playing</string>
     <string name="unknown_artist">Unknown artist</string>
+    <string name="error_no_yt_link">Not a valid YouTube link!</string>
+    <string name="noconnection">No internet connection!</string>
 </resources>
