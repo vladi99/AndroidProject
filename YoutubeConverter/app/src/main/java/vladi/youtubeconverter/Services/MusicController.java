@@ -7,22 +7,11 @@ import android.widget.MediaController;
 import vladi.youtubeconverter.Activities.MyMusic;
 
 public class MusicController extends MediaController {
-    Context c;
     public MusicController(Context c){
         super(c);
-        this.c = c;
     }
 
-    public void hide(){}
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            ((MyMusic)c).onBackPressed();
-            return true;
-        }
-        return super.dispatchKeyEvent(event);
+    public void hide(){
+        super.hide();
     }
-
 }

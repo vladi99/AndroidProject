@@ -9,6 +9,8 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -65,8 +67,12 @@ public class MyVideo extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case R.id.delete:
-                Toast.makeText(this, "Delete", Toast.LENGTH_LONG).show();
-                return true;
+                File file = new File(videos.get(info.position).getPath());
+                boolean deleted = file.delete();
+                Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
+                info.targetView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1));
+                info.targetView.setVisibility(View.GONE);
+                return deleted;
             default:
                 return super.onContextItemSelected(item);
         }

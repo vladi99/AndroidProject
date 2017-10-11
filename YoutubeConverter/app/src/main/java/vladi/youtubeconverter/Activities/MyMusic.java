@@ -251,6 +251,15 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         }
     };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (musicConnection != null) {
+            unbindService(musicConnection);
+        }
+    }
+
     private void getSongList() {
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
