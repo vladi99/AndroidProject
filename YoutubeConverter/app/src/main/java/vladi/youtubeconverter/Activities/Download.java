@@ -70,20 +70,17 @@ public class Download extends AppCompatActivity {
 
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-                System.out.println(vMeta.getAuthor());
                 pd.dismiss();
                 if (ytFiles == null) {
                     Toast.makeText(Download.this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
-                // Iterate over itags
+
                 for (int i = 0, itag; i < ytFiles.size(); i++) {
                     itag = ytFiles.keyAt(i);
-                    // ytFile represents one file with its url and meta data
                     YtFile ytFile = ytFiles.get(itag);
 
-                    // Just add videos in a decent format => height -1 = audio
                     if (ytFile.getFormat().getHeight() == -1 || ytFile.getFormat().getHeight() >= 360) {
                         addButtonToMainLayout(vMeta.getTitle(), ytFile);
                     }
