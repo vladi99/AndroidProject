@@ -2,6 +2,7 @@ package vladi.youtubeconverter.Activities;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -9,6 +10,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
@@ -26,11 +29,10 @@ import vladi.youtubeconverter.R;
  * Vladi copyright
  */
 
-public class Download extends Activity {
-    private static String youtubeLink;
+public class Download extends AppCompatActivity {
 
     private LinearLayout mainLayout;
-    private ProgressBar mainProgressBar;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +40,13 @@ public class Download extends Activity {
 
         setContentView(R.layout.download);
         mainLayout = (LinearLayout) findViewById(R.id.main_layout);
-        mainProgressBar = (ProgressBar) findViewById(R.id.prgrBar);
-
+        pd = new ProgressDialog(this);
+        pd.setTitle("Extracting video...");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
+        pd.show();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         String ytLink = getIntent().getStringExtra(Intent.EXTRA_TEXT);
 
@@ -49,9 +56,8 @@ public class Download extends Activity {
         } else {
             if (ytLink != null
                     && (ytLink.contains("://youtu.be/") || ytLink.contains("youtube.com/watch?v="))) {
-                youtubeLink = ytLink;
                 // We have a valid link
-                getYoutubeDownloadUrl(youtubeLink);
+                getYoutubeDownloadUrl(ytLink);
             } else {
                 Toast.makeText(this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
                 finish();
@@ -65,10 +71,10 @@ public class Download extends Activity {
 
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-                mainProgressBar.setVisibility(View.GONE);
 
+                pd.hide();
                 if (ytFiles == null) {
-                    // Something went wrong we got no urls. Always check this.
+                    Toast.makeText(Download.this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -114,6 +120,7 @@ public class Download extends Activity {
     }
 
     private void downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName) {
+        System.out.println(youtubeDlUrl);
         Uri uri = Uri.parse(youtubeDlUrl);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle(downloadTitle);

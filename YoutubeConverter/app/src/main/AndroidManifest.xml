@@ -40,7 +40,7 @@
             android:configChanges="orientation" />
         <activity
             android:name=".Activities.Download"
-            android:label="@string/my_videos"
+            android:label="@string/select_option"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
