@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -69,7 +70,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
-                return (int)(b.getDate() - a.getDate());
+                return (int) (b.getDate() - a.getDate());
             }
         });
 
@@ -99,6 +100,13 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
             startService(playIntent);
         }
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        super.dispatchTouchEvent(event);
+        controller.show();
+        return true;
     }
 
     @Override
@@ -203,6 +211,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
         });
         controller.setMediaPlayer(this);
         controller.setAnchorView(findViewById(R.id.song_list));
+        controller.requestFocus();
         controller.setEnabled(true);
     }
 
