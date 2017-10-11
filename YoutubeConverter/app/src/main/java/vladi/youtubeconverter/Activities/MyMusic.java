@@ -15,7 +15,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.MediaController;
 import android.widget.MediaController.MediaPlayerControl;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,14 +27,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Objects;
 
 import vladi.youtubeconverter.Adapters.SongAdapter;
 import vladi.youtubeconverter.Models.Song;
 import vladi.youtubeconverter.Models.SongStatus;
 import vladi.youtubeconverter.R;
-import vladi.youtubeconverter.Services.MusicController;
 import vladi.youtubeconverter.Services.MusicService;
 import vladi.youtubeconverter.Services.MusicService.MusicBinder;
 
@@ -43,7 +43,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
     private Intent playIntent;
     private boolean musicBound = false;
 
-    private MusicController controller;
+    private MediaController controller;
 
     private boolean paused = false;
     private boolean playbackPaused = false;
@@ -88,13 +88,6 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
         songView.setAdapter(songAdapter);
         setController();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        stopService(playIntent);
-        musicSrv = null;
     }
 
     @Override
@@ -185,8 +178,8 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
     @Override
     protected void onStop() {
-        controller.hide();
         super.onStop();
+        controller.hide();
         EventBus.getDefault().unregister(this);
     }
 
@@ -196,7 +189,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
     }
 
     private void setController() {
-        controller = new MusicController(this);
+        controller = new MediaController(this);
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +250,8 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
 
         if (musicConnection != null) {
             unbindService(musicConnection);
+            stopService(playIntent);
+            musicSrv = null;
         }
     }
 
@@ -285,6 +280,7 @@ public class MyMusic extends AppCompatActivity implements MediaPlayerControl {
                 songList.add(new Song(thisId, thisTitle, thisArtist, thisDate, false));
             }
             while (musicCursor.moveToNext());
+            musicCursor.close();
         }
     }
 }

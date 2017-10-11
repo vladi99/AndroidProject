@@ -9,8 +9,6 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -28,7 +26,9 @@ import vladi.youtubeconverter.R;
 
 public class MyVideo extends AppCompatActivity {
 
-    List<Video> videos = getAllVideo();
+    private List<Video> videos = getAllVideo();
+    private VideoAdapter adapter;
+    private GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +38,9 @@ public class MyVideo extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GridView gridview = findViewById(R.id.grid);
-            gridview.setAdapter(new VideoAdapter(this, videos));
+        adapter = new VideoAdapter(this, videos);
+        gridview = findViewById(R.id.grid);
+        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -56,7 +57,7 @@ public class MyVideo extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.grid) {
+        if (v.getId() == R.id.grid) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_grid, menu);
         }
@@ -65,13 +66,15 @@ public class MyVideo extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.delete:
                 File file = new File(videos.get(info.position).getPath());
                 boolean deleted = file.delete();
                 Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show();
-                info.targetView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1));
-                info.targetView.setVisibility(View.GONE);
+                videos = getAllVideo();
+                adapter = new VideoAdapter(this, videos);
+                gridview.invalidateViews();
+                gridview.setAdapter(adapter);
                 return deleted;
             default:
                 return super.onContextItemSelected(item);
