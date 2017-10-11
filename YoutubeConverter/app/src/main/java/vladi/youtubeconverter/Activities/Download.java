@@ -1,6 +1,5 @@
 package vladi.youtubeconverter.Activities;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,8 +15,9 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import java.util.HashSet;
 
 import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
@@ -33,7 +33,7 @@ public class Download extends AppCompatActivity {
 
     private LinearLayout mainLayout;
     private ProgressDialog pd;
-
+    private HashSet<String> formats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +49,7 @@ public class Download extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         String ytLink = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-
+        formats = new HashSet<>();
         if (!isNetworkOnline()) {
             Toast.makeText(this, R.string.noconnection, Toast.LENGTH_LONG).show();
             finish();
@@ -71,7 +71,7 @@ public class Download extends AppCompatActivity {
 
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-
+                System.out.println(vMeta.getAuthor());
                 pd.hide();
                 if (ytFiles == null) {
                     Toast.makeText(Download.this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
@@ -94,11 +94,12 @@ public class Download extends AppCompatActivity {
     }
 
     private void addButtonToMainLayout(final String videoTitle, final YtFile ytfile) {
-        // Display some buttons and let the user choose the format
-        String btnText = (ytfile.getFormat().getHeight() == -1) ? "Audio " +
-                ytfile.getFormat().getAudioBitrate() + " kbit/s" :
+        String btnText = (ytfile.getFormat().getHeight() == -1) ? "MP3" :
                 ytfile.getFormat().getHeight() + "p";
-        btnText += (ytfile.getFormat().isDashContainer()) ? " dash" : "";
+        if (formats.contains(btnText)){
+            return;
+        }
+        formats.add(btnText);
         Button btn = new Button(this);
         btn.setText(btnText);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +121,9 @@ public class Download extends AppCompatActivity {
     }
 
     private void downloadFromUrl(String youtubeDlUrl, String downloadTitle, String fileName) {
-        System.out.println(youtubeDlUrl);
         Uri uri = Uri.parse(youtubeDlUrl);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle(downloadTitle);
-
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DCIM + "/Camera", fileName);
