@@ -56,7 +56,6 @@ public class Download extends AppCompatActivity {
         } else {
             if (ytLink != null
                     && (ytLink.contains("://youtu.be/") || ytLink.contains("youtube.com/watch?v="))) {
-                // We have a valid link
                 getYoutubeDownloadUrl(ytLink);
             } else {
                 Toast.makeText(this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
@@ -72,7 +71,7 @@ public class Download extends AppCompatActivity {
             @Override
             public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
                 System.out.println(vMeta.getAuthor());
-                pd.hide();
+                pd.dismiss();
                 if (ytFiles == null) {
                     Toast.makeText(Download.this, R.string.error_no_yt_link, Toast.LENGTH_LONG).show();
                     finish();
